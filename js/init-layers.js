@@ -92,7 +92,7 @@ function initLayers(){
 	    source: new ol.source.Vector({
 	        format: new ol.format.GeoJSON(),
 	        projection : 'EPSG:3857',
-	        url: 'Regions.geojson'
+	        url: 'Regions2.geojson'
 	    }),
 	    style: styleFunction
 	})
