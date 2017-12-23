@@ -57,19 +57,47 @@ function initLayers(){
 	    style: styleFunction
 	});
 
-	/*layerInvest = new ol.layer.Vector({
-	    'title': 'Инвестиционные проекты',
+	layerReestrakkrorg = new ol.layer.Vector({
+	    'title': 'Реестр аккредитованных организаций',
 	    source: new ol.source.Vector({
 		    format: new ol.format.GeoJSON(),
 		    url: function(extent) {
-		      return 'https://gs.gismart.ru/geoserver2/mainMap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=mainMap:invest&maxFeatures=500&' +
+		      return 'https://gs.gismart.ru/geoserver2/mainMap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=mainMap:reestrakkrorg&maxFeatures=500&' +
 		          'outputFormat=application/json&srsname=EPSG:3857&' +
 		          'bbox=' + extent.join(',')+',EPSG:3857';
 		    },
 		    strategy: ol.loadingstrategy.bbox
 		}),
 	    style: styleFunction
-	});*/
+	});
+
+	layerReestrexpert = new ol.layer.Vector({
+	    'title': 'Реестр экспертов',
+	    source: new ol.source.Vector({
+		    format: new ol.format.GeoJSON(),
+		    url: function(extent) {
+		      return 'https://gs.gismart.ru/geoserver2/mainMap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=mainMap:reestrexpert&maxFeatures=500&' +
+		          'outputFormat=application/json&srsname=EPSG:3857&' +
+		          'bbox=' + extent.join(',')+',EPSG:3857';
+		    },
+		    strategy: ol.loadingstrategy.bbox
+		}),
+	    style: styleFunction
+	});
+
+	layerReestrorg = new ol.layer.Vector({
+	    'title': 'Реестр организаций',
+	    source: new ol.source.Vector({
+		    format: new ol.format.GeoJSON(),
+		    url: function(extent) {
+		      return 'https://gs.gismart.ru/geoserver2/mainMap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=mainMap:reestrorg&maxFeatures=500&' +
+		          'outputFormat=application/json&srsname=EPSG:3857&' +
+		          'bbox=' + extent.join(',')+',EPSG:3857';
+		    },
+		    strategy: ol.loadingstrategy.bbox
+		}),
+	    style: styleFunction
+	});
 
 	layerOSM = new ol.layer.Tile({
 	    title: 'OSM',
@@ -165,7 +193,10 @@ function initLayers(){
 	        layerPodvedor,
 	        layerProm,
 	        layerInvest,
-	        layerOrgkaz
+	        layerOrgkaz,
+	        layerReestrakkrorg,
+	        layerReestrexpert,
+	        layerReestrorg
 	    ]
 	});
 };

@@ -21,5 +21,11 @@ function toggleLayerVisibility(layerName) {
           layerOrgkaz.setVisible(!layerOrgkaz.getVisible());
     } else if (layerName == 'Invest') {
           layerInvest.setVisible(!layerInvest.getVisible());
+    } else if (layerName == 'Reestrakkrorg') {
+          layerReestrakkrorg.setVisible(!layerReestrakkrorg.getVisible());
+    } else if (layerName == 'Reestrexpert') {
+          layerReestrexpert.setVisible(!layerReestrexpert.getVisible());
+    } else if (layerName == 'Reestrorg') {
+          layerReestrorg.setVisible(!layerReestrorg.getVisible());
     }
 }
