@@ -26,7 +26,6 @@ function initLayers(){
 			    xhr.onerror = onError;
 			    xhr.onload = function() {
 			    	if (xhr.status == 200) {
-			    		promSource.clear();
 			    		promSource.addFeatures(promSource.getFormat().readFeatures(xhr.responseText));
 			    	} else {
 			    		onError();
@@ -120,7 +119,7 @@ function initLayers(){
 	    source: new ol.source.Vector({
 	        format: new ol.format.GeoJSON(),
 	        projection : 'EPSG:3857',
-	        url: 'Regions2.geojson'
+	        url: 'Regions.geojson'
 	    }),
 	    style: styleFunction
 	})
@@ -138,7 +137,6 @@ function initLayers(){
 			    xhr.onerror = onError;
 			    xhr.onload = function() {
 			    	if (xhr.status == 200) {
-			    		vectorForInvestClust.clear();
 			    		vectorForInvestClust.addFeatures(vectorForInvestClust.getFormat().readFeatures(xhr.responseText));
 			    	} else {
 			    		onError();
