@@ -67,6 +67,13 @@
           .ol-popup-closer:after {
             content: "✖";
           }
+          #header {
+            font-size: 2.2em; /* Размер текста */
+            text-align: center; /* Выравнивание по центру */
+            padding: 5px; /* Отступы вокруг текста */
+            background: #8fa09b; /* Цвет фона шапки */
+            color: #ffe; /* Цвет текста */
+           }
         </style>
         <style>
             body {
@@ -83,6 +90,7 @@
         </style>
     </head>
     <body>
+        <div id="header">Интерактивная карта организаций, оказывающих существенное влияние на отрасль</div>
         <div id="map" class="sidebar-map"></div>
         <div id="popup" class="ol-popup">
             <a href="#" id="popup-closer" class="ol-popup-closer"></a>
@@ -118,8 +126,8 @@
                 })
             });
             initORG();
-            var sidebar = new ol.control.Sidebar({ element: 'sidebar', position: 'left' });
-            map.addControl(sidebar);
+            //var sidebar = new ol.control.Sidebar({ element: 'sidebar', position: 'left' });
+            //map.addControl(sidebar);
             map.addLayer(layerOSM);
             map.addLayer(RegionsLayer);
             map.addLayer(layerOrgkaz); 
