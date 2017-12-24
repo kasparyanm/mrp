@@ -38,45 +38,42 @@
         </style>
     </head>
     <body>
-        <div id="sidebar" class="sidebar collapsed">
+        <div id="sidebar-left" class="sidebar collapsed">
             <div class="sidebar-tabs">
                 <ul role="tablist">
                     <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                    <li><a href="#settings" role="tab"><i class="fa fa-user"></i></a></li>
-                    <!--li class="disabled"><a href="#messages" role="tab"><i class="fa fa-envelope"></i></a></li-->
                 </ul>
-                <!--ul role="tablist">
-                    <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
-                </ul-->
             </div>
 
             <div class="sidebar-content">
                 <div class="sidebar-pane" id="home">
                     <h1 class="sidebar-header">
                         Карта промышленности
-                        <span class="sidebar-close">
+                        <!--span class="sidebar-close">
                             <i class="fa fa-caret-left"></i>
-                        </span>
+                        </span-->
                     </h1>
-                    <p> <a href="#" onclick="toggleLayerVisibility('Prom')"><br>Промышленность</a> </p>
+                    <p> <a href="#" onclick="openRightSidebar();"><br>Промышленность</a> </p>
                 </div>
+            </div>
+        </div>
+        <div id="sidebar-right" class="sidebar collapsed">
+            <div class="sidebar-tabs">
+                <ul role="tablist">
+                    <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                </ul>
+            </div>
 
-                <div class="sidebar-pane" id="settings">
+            <div class="sidebar-content">
+                <div class="sidebar-pane" id="home">
                     <h1 class="sidebar-header">
                         Аналитика
-                        <span class="sidebar-close">
+                        <!--span class="sidebar-close">
                             <i class="fa fa-caret-left"></i>
-                        </span>
+                        </span-->
                     </h1>
+                    <div id="analytics"></div>
                 </div>
-
-                <!--div class="sidebar-pane" id="messages">
-                    <h1 class="sidebar-header">Сообщения<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                </div>
-
-                <div class="sidebar-pane" id="settings">
-                    <h1 class="sidebar-header">Настройки<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                </div-->
             </div>
         </div>
 
@@ -95,13 +92,295 @@
                   zoom: 4
                 })
             });
-            var sidebar = new ol.control.Sidebar({ element: 'sidebar', position: 'left' });
-            map.addControl(sidebar);
+            var sidebarLeft = new ol.control.Sidebar({ element: 'sidebar-left', position: 'left' });
+            map.addControl(sidebarLeft);
+            var sidebarRight = new ol.control.Sidebar({ element: 'sidebar-right', position: 'right' });
+            map.addControl(sidebarRight);
+
+            function openRightSidebar(){
+                sidebarRight.open();
+                document.getElementById("sidebar-right").childNodes[3].childNodes[1].classList.add('active');
+            };
+
+            function openLeftSidebar(){
+                sidebarLeft.open();
+                document.getElementById("sidebar-left").childNodes[3].childNodes[1].classList.add('active');
+            };
             initLayers();
+            openLeftSidebar();
+
             map.addLayer(layerOSM);
             map.addLayer(drawingLayer);
             map.addLayer(RegionsLayer);
-            map.addLayer(layerProm);   
+            map.addLayer(layerProm);
+
+            var draw;
+            var modify;
+            var listener;
+
+            var vectorSource = layerProm.getSource();
+            draw = new ol.interaction.Draw({
+                source : drawingSource,
+                type : 'Polygon',
+                //only draw when Ctrl is pressed.
+                condition : ol.events.condition.platformModifierKeyOnly
+            });
+            map.addInteraction(draw);
+
+            draw.on('drawstart',function(event){
+                drawingSource.clear();
+            },this);
+
+            draw.on('drawend', function(event) {
+                sketch = null;
+                polygon = event.feature.getGeometry();
+                var featureRequest = new ol.format.WFS().writeGetFeature({
+                    srsName: 'EPSG:3857',
+                    featureNS: 'http://www.opengis.net',
+                    featurePrefix: 'mainMap',
+                    featureTypes: ['product'],
+                    outputFormat: 'application/json',
+                    filter: ol.format.filter.intersects('way', polygon, 'EPSG:3857')
+                });
+                console.log(new XMLSerializer().serializeToString(featureRequest));
+              // then post the request and add the received features to a layer
+                vectorSource.clear();
+                layerProm.setVisible(false);
+                fetch('https://gs.gismart.ru/geoserver2/mainMap/ows', {
+                    method: 'POST',
+                    body: new XMLSerializer().serializeToString(featureRequest)
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(json) {
+                    var features = new ol.format.GeoJSON().readFeatures(json);
+                    vectorSource.addFeatures(features);
+                    //put2gallery(features);
+                    map.getView().fit(vectorSource.getExtent());
+                });
+            });
+
+            var info = document.createElement("div");
+            /*info.setAttribute("class", "gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter");
+            info.setAttribute("id", "info");*/
+            var target = document.getElementById('analytics');
+                target.appendChild(info);
+            function displayStatisticaInfo(feature){
+                var coteg = {"01": "Живые животные",
+                   "02": "Живые животные",
+                    "03": "Живые животные",
+                    "04": "Живые животные",
+                    "05": "Живые животные",
+                    "06": "Продукты растительного происхождения",
+                    "07": "Продукты растительного происхождения",
+                    "08": "Продукты растительного происхождения",
+                    "09": "Продукты растительного происхождения",
+                    "10": "Продукты растительного происхождения",
+                    "11": "Продукты растительного происхождения",
+                    "12": "Продукты растительного происхождения",
+                    "13": "Продукты растительного происхождения",
+                    "14": "Продукты растительного происхождения",
+                    "15": "Жиры и масла",
+                    "16": "Готовые пищевые продукты",
+                    "17": "Готовые пищевые продукты",
+                    "18": "Готовые пищевые продукты",
+                    "19": "Готовые пищевые продукты",
+                    "20": "Готовые пищевые продукты",
+                    "21": "Готовые пищевые продукты",
+                    "22": "Готовые пищевые продукты",
+                    "23": "Готовые пищевые продукты",
+                    "24": "Готовые пищевые продукты",
+                    "25": "Минеральные продукты",
+                    "26": "Минеральные продукты",
+                    "27": "Минеральные продукты",
+                    "28": "Продукция химической и связанных с ней отраслей промышленности",
+                    "29": "Продукция химической и связанных с ней отраслей промышленности",
+                    "30": "Продукция химической и связанных с ней отраслей промышленности",
+                    "31": "Продукция химической и связанных с ней отраслей промышленности",
+                    "32": "Продукция химической и связанных с ней отраслей промышленности",
+                    "33": "Продукция химической и связанных с ней отраслей промышленности",
+                    "34": "Продукция химической и связанных с ней отраслей промышленности",
+                    "35": "Продукция химической и связанных с ней отраслей промышленности",
+                    "36": "Продукция химической и связанных с ней отраслей промышленности",
+                    "37": "Продукция химической и связанных с ней отраслей промышленности",
+                    "38": "Продукция химической и связанных с ней отраслей промышленности",
+                    "39": "Пластмассы",
+                    "40": "Пластмассы",
+                    "41": "Необработанные шкуры",
+                    "42": "Необработанные шкуры",
+                    "43": "Необработанные шкуры",
+                    "44": "Древесина и изделия из нее",
+                    "45": "Древесина и изделия из нее",
+                    "46": "Древесина и изделия из нее",
+                    "47": "Масса из древесины",
+                    "48": "Масса из древесины",
+                    "49": "Масса из древесины",
+                    "50":  "Текстильные материалы и текстильные изделия",
+                    "51":  "Текстильные материалы и текстильные изделия",
+                    "52":  "Текстильные материалы и текстильные изделия",
+                    "53":  "Текстильные материалы и текстильные изделия",
+                    "54":  "Текстильные материалы и текстильные изделия",
+                    "55":  "Текстильные материалы и текстильные изделия",
+                    "56":  "Текстильные материалы и текстильные изделия",
+                    "57":  "Текстильные материалы и текстильные изделия",
+                    "58":  "Текстильные материалы и текстильные изделия",
+                    "59":  "Текстильные материалы и текстильные изделия",
+                    "60":  "Текстильные материалы и текстильные изделия",
+                    "61":  "Текстильные материалы и текстильные изделия",
+                    "62":  "Текстильные материалы и текстильные изделия",
+                    "63":  "Текстильные материалы и текстильные изделия",
+                    "64": "Обувь, головные уборы",
+                    "65": "Обувь, головные уборы",
+                    "66": "Обувь, головные уборы",
+                    "67": "Обувь, головные уборы",
+                    "68": "Изделия из камня",
+                    "69": "Изделия из камня",
+                    "70": "Изделия из камня",
+                    "71": "Жемчуг природный",
+                    "72": "Недрагоценные металлы",
+                    "73": "Недрагоценные металлы",
+                    "74": "Недрагоценные металлы",
+                    "75": "Недрагоценные металлы",
+                    "76": "Недрагоценные металлы",
+                    "77": "Недрагоценные металлы",
+                    "78": "Недрагоценные металлы",
+                    "79": "Недрагоценные металлы",
+                    "80": "Недрагоценные металлы",
+                    "81": "Недрагоценные металлы",
+                    "82": "Недрагоценные металлы",
+                    "83": "Недрагоценные металлы",
+                    "84": "Машины, оборудование и механизмы",
+                    "85": "Машины, оборудование и механизмы",
+                    "86": "Средства наземного транспорта",
+                    "87": "Средства наземного транспорта",
+                    "88": "Средства наземного транспорта",
+                    "89": "Средства наземного транспорта",
+                    "90": "Инструменты и аппараты оптические",
+                    "91": "Инструменты и аппараты оптические",
+                    "92": "Инструменты и аппараты оптические",
+                    "93": "Оружие и боеприпасы",
+                    "94": "Разные промышленные товары",
+                    "95": "Разные промышленные товары",
+                    "97": "Разные промышленные товары",
+                    "other": "Разные промышленные товары",
+                    "97": "Произведения искусства"
+                    };
+                sketch = null;
+                var polygon = feature.getGeometry();
+                var featureRequest = new ol.format.WFS().writeGetFeature({
+                    srsName: 'EPSG:3857',
+                    featureNS: 'http://www.opengis.net',
+                    featurePrefix: 'mainMap',
+                    featureTypes: ['product'],
+                    outputFormat: 'application/json',
+                    filter: ol.format.filter.intersects('way', polygon, 'EPSG:3857')
+                });
+                console.log(new XMLSerializer().serializeToString(featureRequest));
+              //then post the request and add the received features to a layer
+                vectorSource.clear();
+                drawingSource.clear();
+                fetch('https://gs.gismart.ru/geoserver2/mainMap/ows', {
+                    method: 'POST',
+                    body: new XMLSerializer().serializeToString(featureRequest)
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(json) {
+                    var features = new ol.format.GeoJSON().readFeatures(json);
+                    var data = {};
+                    for (var i = 0; i < features.length; ++i) {
+                        var f = features[i];
+                        var item5 = f.getProperties()['item5']
+                        if(item5.length > 2){
+                            item5 = item5.substr(0,2);
+                        }else{
+                            item5='other';
+                        }
+                        if(typeof data[coteg[item5]] === 'undefined'){
+                            data[coteg[item5]] = 1;
+                        }else{
+                            data[coteg[item5]] += 1;
+                        }
+                    }
+                    var ls = [];
+                    for (var a in data){
+                        ls.push([a, data[a]]);
+                    }
+                    var chart = c3.generate({
+                        bindto: '#analytics',
+                        title: {
+                            show: false,
+                            text: 'My Line Chart',
+                            position: 'top-center',   // top-left, top-center and top-right
+                            padding: {
+                              top: 20,
+                              right: 20,
+                              bottom: 40,
+                              left: 50
+                            }
+                          },
+                        data: {
+                          columns: ls,
+                          type: 'donut'
+                        },
+                        donut:{
+                            title:feature.getProperties()['NAME']
+                        }
+                      });
+                    var cart ={
+                        Region: feature.getProperties()['NAME']                       
+                    };
+                    vectorSource.addFeatures(features);
+                });
+            };
+                function displayFeatureInfo(pixel) {
+    
+            info.style.left = pixel[0] + 'px';
+            info.style.top = (pixel[1] - 50) + 'px';
+            
+            var features = [];
+            map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+                if (typeof feature.get('item1') === 'undefined') {
+                    if (typeof feature.get('NAME') === 'undefined') {
+                    }else{
+                        displayStatisticaInfo(feature)
+                    }
+                } else {
+                    features.push(feature);
+                }
+            });
+            if (features.length > 1) {
+                    var text = [];
+                    for (var i = 0, ii = features.length; i < ii; ++i) {
+                        text.push(features[i].get('name'));
+                    }
+                    info.innerHTML = text.join('<br>');
+                    info.style.display = 'block';
+                    target.style.cursor = "pointer";
+                } else if (features.length == 1) {
+                    $('#info').empty();
+                    var label = $('<label class="filter-col" style="margin-right:0;"></label>');
+                    label.text(features[0].get('item2'));
+                    var letter = $('<label class="filter-metro"></label>');
+                    letter.text("Номер: "+features[0].get('item3'));
+                    var promProduct = $('<label class="filter-address"></label>');
+                    promProduct.text("Продукция : "+features[0].get('item4'));
+                    $('#info').append(label).append(letter).append(promProduct);
+                    info.style.display = 'block';
+                    target.style.cursor = "pointer";
+                } else {
+                    info.style.display = 'none';
+                    target.style.cursor = "";
+                }
+            }
+            info.style.display = 'none';
+            map.on('click', function(evt) {
+                    if (evt.dragging) {
+                        info.style.display = 'none';
+                        return;
+                    }
+                    var pixel = map.getEventPixel(evt.originalEvent);
+                    displayFeatureInfo(pixel);
+                    openRightSidebar();
+            });
         </script>
     </body>
 </html>
