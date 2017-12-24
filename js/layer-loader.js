@@ -1,15 +1,12 @@
-function setMapType(layerGroup) {
-    if ( layerGroup == 'All'){
-        map.setLayerGroup(layerGroupAll);
-    } else if(layerGroup == 'Podvedor') {
-        map.setLayerGroup(layerGroupPodvedor);
-    } else if (layerGroup == 'Prom') {
-        map.setLayerGroup(layerGroupProm);
-    } else if (layerGroup == 'Orgkaz') {
-        map.setLayerGroup(layerGroupOrgkaz);
-    } else if (layerGroup == 'Invest') {
-        map.setLayerGroup(layerGroupInvest);
-    }
+function LoadLayers() {
+  map.setLayerGroup(layerGroupAll);
+  layerPodvedor.setVisible(false);
+  layerProm.setVisible(false);
+  layerInvest.setVisible(false);
+  layerOrgkaz.setVisible(false);
+  layerReestrakkrorg.setVisible(false);
+  layerReestrexpert.setVisible(false);
+  layerReestrorg.setVisible(false);
 }
 
 function toggleLayerVisibility(layerName) {
