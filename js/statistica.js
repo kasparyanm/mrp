@@ -1,5 +1,12 @@
 function getStatistica(feature){
 	var res={};
+	var unemp = feature.get("unemp").split(' ');
+	var ls=[];
+	ls.push("Безработица");
+	for(var i = 0; i < unemp.length; ++i){
+		ls.push(parseFloat(unemp[i]))
+	}
+	res['unemp']=ls;
 	res['name']=feature.get("NAME")
 	res['population'] = feature.get("population");
 	res['avsel'] = feature.get("avsel");

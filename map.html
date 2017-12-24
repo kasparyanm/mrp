@@ -22,8 +22,18 @@
         <script src="js/controls.js"></script>
         <script src="js/statistica.js"></script>
         <script src="js/filters.js"></script>
+        <style>
+            #header {
+            font-size: 2.2em; /* Размер текста */
+            text-align: center; /* Выравнивание по центру */
+            padding: 7px; /* Отступы вокруг текста */
+            background: #0074d9;; /* Цвет фона шапки */
+            color: #ffe; /* Цвет текста */
+           }
+        </style>
     </head>
     <body>
+        <div id="header">MRP</div>
         <div id="sidebar" class="sidebar collapsed">
             <div class="sidebar-tabs">
                 <ul role="tablist">
@@ -74,7 +84,10 @@
                         <input type="checkbox" name="rent" value="rent"> Стоимость аренды<br>
                         <input type="checkbox" name="profGroups" value="profGroups"> Проф. сообщества<br>
                         <br> Население больше (тыс): <br><input type="text" name="pop" value="100"><br><br>
-                        <input type="submit" value="Скачать">
+                        <form method="get" action="data.xlsx">
+                            <button type="submit">Скачать!</button>
+                        </form>
+                        
                     </div>
                 </div>
             </div>
@@ -141,7 +154,7 @@
                                     str += '<p>Средняя з.п: '+resStat["avsel"]+' руб</p>';
                                     str += '<p>Население: '+resStat["population"]+' чел</p>';
                                     str += '<p>Аккредитованных организаций:<br>'+resStat['akkrorg']+'</p>';
-                                    str = '<table class="fixed" width="500px"> <col width="200px"/><col width="200px" /> <tr> <td>'+str+'</td> <td><h5>Инвестиционные проекты</h5><div id="investanal"></div></td> </tr> <tr> <td><h5>Отрасли промышленности</h5><div id="promanalytics"></div></td> <td><h5>Влиятельные организации</h5><div id="orgkazalytics"></div></td> </tr> </table>'
+                                    str = '<table class="fixed" width="500px"> <col width="200px"/><col width="200px" /> <tr> <td>'+str+'</td> <td><h5>Инвестиционные проекты</h5><div id="investanal"></div></td> </tr> <tr> <td><h5>Отрасли промышленности</h5><div id="promanalytics"></div></td> <td><h5>Влиятельные организации</h5><div id="orgkazalytics"></div></td> </tr> </table> <div id="unempanal"></div>'
                                     var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
                                     content.innerHTML = str;
 
@@ -202,7 +215,45 @@
                                             title:""
                                         }
                                       });
+                                   
+                                   var chart = c3.generate({
+                                        bindto: '#unempanal',
+                                        legend:{
+                                            show:false
+                                        },
+                                        size:{
+                                            height: 100,
+                                            width: 450,
+                                        },
+                                        title: {
+                                            show: false,
+                                            text: 'My Line Chart',
+                                            position: 'top-center',   // top-left, top-center and top-right
+                                            padding: {
+                                              top: 20,
+                                              right: 20,
+                                              bottom: 40,
+                                              left: 50
+                                            }
+                                          },
 
+                                        data: {
+                                            x:'x',
+                                            columns: [
+                                            ['x', '2003-01-01','2004-01-01','2005-01-01','2006-01-01','2007-01-01','2008-01-01','2009-01-01','2010-01-01','2011-01-01','2012-01-01','2013-01-01','2014-01-01','2015-01-01', '2016-01-01', '2017-01-01'],
+                                                resStat['unemp']
+                                            ]
+                                        },
+                                        axis: {
+                                            x: {
+                                                type: 'timeseries',
+                                                tick: {
+                                                    format: '%Y'
+                                                }
+                                            }
+                                        }
+
+                                      });
                                       var chart = c3.generate({
                                         bindto: '#investanal',
                                         legend:{
