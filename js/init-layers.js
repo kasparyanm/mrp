@@ -10,7 +10,9 @@ function initLayers(){
 		    },
 		    strategy: ol.loadingstrategy.bbox
 		}),
-	    style: styleFunction
+	    style: function(feature) {
+				return styles[feature.getGeometry().getType()];
+				}
 	});
 	var promSource= new ol.source.Vector({
 		    format: new ol.format.GeoJSON(),
