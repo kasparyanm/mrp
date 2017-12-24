@@ -117,7 +117,7 @@ function initSourceLayer(){
 	vectorSource = new ol.source.Vector({
 		format: new ol.format.GeoJSON(),
 		loader: function(extent, resolution, projection) {
-			var url = 'https://gs.gismart.ru/geoserver2/mainMap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=mainMap:podvedorg&maxFeatures=500&' +
+			var url = 'https://gs.gismart.ru/geoserver2/mainMap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=mainMap:reestrakkrorg&maxFeatures=500&' +
 			          'outputFormat=application/json&srsname=EPSG:3857&' +
 			          'bbox=' + extent.join(',')+',EPSG:3857';
 			var xhr = new XMLHttpRequest();
