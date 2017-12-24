@@ -22,7 +22,7 @@
         <script src="js/layer-loader.js"></script>
         <script src="js/init-layers.js"></script>
         <script src="js/controls.js"></script>
-
+        <script src="js/statistica.js"></script>
         <style>
             body {
                 padding: 0;
@@ -184,9 +184,15 @@
                         features.push(feature)
                     }
                 });
-                var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
-                content.innerHTML = '';
-                overlay.setPosition(map.getCoordinateFromPixel([150,150]));
+                if(features.length>0){
+                    resStat = getStatistica(features[0])
+                    resStat['prom'].then(function(){
+                        var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
+                        content.innerHTML = '';
+                        overlay.setPosition(map.getCoordinateFromPixel([150,150]));
+                    })
+                    
+                }
                 
             });
         </script>
