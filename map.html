@@ -112,9 +112,10 @@
                     }
                 });
                 var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
-                content.innerHTML = '';
-                overlay.setPosition(map.getCoordinateFromPixel([150,150]));
-                
+                content.innerHTML = '<p><br> sdfsdfsdfsfsdfsd <br> sdfsdfsd</p>';
+                overlay.setPosition(map.getCoordinateFromPixel([550,750]));
+                content.style.width = "1000px";
+                content.style.height = "600px";
             });
         </script>
     </body>
