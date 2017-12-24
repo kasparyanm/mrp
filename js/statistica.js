@@ -5,6 +5,7 @@ function getStatistica(feature){
 	res['avsel'] = feature.get("avsel");
 	res['prom'] = statisticaProm(feature);
 	res['invest'] = statisticaInvest(feature);
+	res['akkrorg']=statisticaAkkrOrg(feature);
 	return res;
 }
 
@@ -114,5 +115,41 @@ function statisticaInvest(feature){
         	res.push([f,rasp[f]]);
         }
 		return res;
+	});
+}
+
+function statisticaAkkrOrg(feature){
+	var polygon = feature.getGeometry();
+	var featureRequest = new ol.format.WFS().writeGetFeature({
+		srsName: 'EPSG:3857',
+		featureNS: 'http://www.opengis.net',
+		featurePrefix: 'mainMap',
+		featureTypes: ['reestrakkrorg'],
+		outputFormat: 'application/json',
+		filter: ol.format.filter.intersects('way', polygon, 'EPSG:3857')
+	});
+
+	return fetch('https://gs.gismart.ru/geoserver2/mainMap/ows', {
+		method: 'POST',
+		body: new XMLSerializer().serializeToString(featureRequest),
+		mode: 'cors'
+	}).then(function(response) {
+		return response.json();
+	}).then(function(json) {
+		var res = [];
+		var str = "";
+		var features = new ol.format.GeoJSON().readFeatures(json);
+		rasp={};
+		var i = 0;
+		for(var f in features){
+			str+='<code>' + features[f].get('org_name').substr(0,30) + '</code><br>';
+			++i;
+			if(i>3){
+				str+='<code>...</code><br>';
+				break;
+			}
+		}
+		
+		return str;
 	});
 }
