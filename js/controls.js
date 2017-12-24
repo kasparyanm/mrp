@@ -20,7 +20,7 @@ function initControls(){
 
 function initStyles(){
   image = new ol.style.Circle({
-      radius: 5,
+      radius: 8,
       fill: new ol.style.Fill({
           color: 'rgba(255, 255, 0, 0.5)'
       }),
