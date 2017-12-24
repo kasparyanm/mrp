@@ -38,7 +38,7 @@
         </style>
     </head>
     <body>
-        <div id="sidebar-left" class="sidebar collapsed">
+        <!--div id="sidebar-left" class="sidebar collapsed">
             <div class="sidebar-tabs">
                 <ul role="tablist">
                     <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
@@ -49,14 +49,14 @@
                 <div class="sidebar-pane" id="home">
                     <h1 class="sidebar-header">
                         Карта промышленности
-                        <!--span class="sidebar-close">
+                        span class="sidebar-close">
                             <i class="fa fa-caret-left"></i>
-                        </span-->
+                        </span>
                     </h1>
                     <p> <a href="#" onclick="openRightSidebar();"><br>Промышленность</a> </p>
                 </div>
             </div>
-        </div>
+        </div-->
         <div id="sidebar-right" class="sidebar collapsed">
             <div class="sidebar-tabs">
                 <ul role="tablist">
@@ -92,8 +92,8 @@
                   zoom: 4
                 })
             });
-            var sidebarLeft = new ol.control.Sidebar({ element: 'sidebar-left', position: 'left' });
-            map.addControl(sidebarLeft);
+            /*var sidebarLeft = new ol.control.Sidebar({ element: 'sidebar-left', position: 'left' });
+            map.addControl(sidebarLeft);*/
             var sidebarRight = new ol.control.Sidebar({ element: 'sidebar-right', position: 'right' });
             map.addControl(sidebarRight);
 
@@ -102,12 +102,12 @@
                 document.getElementById("sidebar-right").childNodes[3].childNodes[1].classList.add('active');
             };
 
-            function openLeftSidebar(){
+            /*function openLeftSidebar(){
                 sidebarLeft.open();
                 document.getElementById("sidebar-left").childNodes[3].childNodes[1].classList.add('active');
-            };
+            };*/
             initLayers();
-            openLeftSidebar();
+            //openLeftSidebar();
 
             map.addLayer(layerOSM);
             map.addLayer(drawingLayer);
@@ -142,7 +142,7 @@
                     outputFormat: 'application/json',
                     filter: ol.format.filter.intersects('way', polygon, 'EPSG:3857')
                 });
-                console.log(new XMLSerializer().serializeToString(featureRequest));
+                //console.log(new XMLSerializer().serializeToString(featureRequest));
               // then post the request and add the received features to a layer
                 vectorSource.clear();
                 layerProm.setVisible(false);
@@ -158,7 +158,6 @@
                     map.getView().fit(vectorSource.getExtent());
                 });
             });
-
             var info = document.createElement("div");
             /*info.setAttribute("class", "gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter");
             info.setAttribute("id", "info");*/
@@ -274,7 +273,7 @@
                     outputFormat: 'application/json',
                     filter: ol.format.filter.intersects('way', polygon, 'EPSG:3857')
                 });
-                console.log(new XMLSerializer().serializeToString(featureRequest));
+                //console.log(new XMLSerializer().serializeToString(featureRequest));
               //then post the request and add the received features to a layer
                 vectorSource.clear();
                 drawingSource.clear();
@@ -325,61 +324,61 @@
                             title:feature.getProperties()['NAME']
                         }
                       });
-                    var cart ={
+                    var cart = {
                         Region: feature.getProperties()['NAME']                       
                     };
                     vectorSource.addFeatures(features);
                 });
             };
-                function displayFeatureInfo(pixel) {
+            function displayFeatureInfo(pixel) {
     
-            info.style.left = pixel[0] + 'px';
-            info.style.top = (pixel[1] - 50) + 'px';
-            
-            var features = [];
-            map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-                if (typeof feature.get('item1') === 'undefined') {
-                    if (typeof feature.get('NAME') === 'undefined') {
-                    }else{
-                        displayStatisticaInfo(feature)
+                info.style.left = pixel[0] + 'px';
+                info.style.top = (pixel[1] - 50) + 'px';
+                
+                var features = [];
+                map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+                    if (typeof feature.get('item1') === 'undefined') {
+                        if (typeof feature.get('NAME') === 'undefined') {
+                        }else{
+                            displayStatisticaInfo(feature)
+                        }
+                    } else {
+                        features.push(feature);
                     }
-                } else {
-                    features.push(feature);
-                }
-            });
-            if (features.length > 1) {
-                    var text = [];
-                    for (var i = 0, ii = features.length; i < ii; ++i) {
-                        text.push(features[i].get('name'));
-                    }
-                    info.innerHTML = text.join('<br>');
-                    info.style.display = 'block';
-                    target.style.cursor = "pointer";
-                } else if (features.length == 1) {
-                    $('#info').empty();
-                    var label = $('<label class="filter-col" style="margin-right:0;"></label>');
-                    label.text(features[0].get('item2'));
-                    var letter = $('<label class="filter-metro"></label>');
-                    letter.text("Номер: "+features[0].get('item3'));
-                    var promProduct = $('<label class="filter-address"></label>');
-                    promProduct.text("Продукция : "+features[0].get('item4'));
-                    $('#info').append(label).append(letter).append(promProduct);
-                    info.style.display = 'block';
-                    target.style.cursor = "pointer";
-                } else {
-                    info.style.display = 'none';
-                    target.style.cursor = "";
-                }
-            }
-            info.style.display = 'none';
-            map.on('click', function(evt) {
-                    if (evt.dragging) {
+                });
+                if (features.length > 1) {
+                        var text = [];
+                        for (var i = 0, ii = features.length; i < ii; ++i) {
+                            text.push(features[i].get('name'));
+                        }
+                        info.innerHTML = text.join('<br>');
+                        info.style.display = 'block';
+                        target.style.cursor = "pointer";
+                    } else if (features.length == 1) {
+                        $('#info').empty();
+                        var label = $('<label class="filter-col" style="margin-right:0;"></label>');
+                        label.text(features[0].get('item2'));
+                        var letter = $('<label class="filter-metro"></label>');
+                        letter.text("Номер: "+features[0].get('item3'));
+                        var promProduct = $('<label class="filter-address"></label>');
+                        promProduct.text("Продукция : "+features[0].get('item4'));
+                        $('#info').append(label).append(letter).append(promProduct);
+                        info.style.display = 'block';
+                        target.style.cursor = "pointer";
+                    } else {
                         info.style.display = 'none';
-                        return;
+                        target.style.cursor = "";
                     }
-                    var pixel = map.getEventPixel(evt.originalEvent);
-                    displayFeatureInfo(pixel);
-                    openRightSidebar();
+                }
+                info.style.display = 'none';
+                map.on('click', function(evt) {
+                        if (evt.dragging) {
+                            info.style.display = 'none';
+                            return;
+                        }
+                        var pixel = map.getEventPixel(evt.originalEvent);
+                        displayFeatureInfo(pixel);
+                        openRightSidebar();
             });
         </script>
     </body>
