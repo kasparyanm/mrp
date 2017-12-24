@@ -10,6 +10,10 @@
   left: -50px;
   min-width: 280px;
 }
+.main-container {
+  margin: auto;
+  padding: 10px;
+}
 .ol-popup:after, .ol-popup:before {
   top: 100%;
   border: solid transparent;
