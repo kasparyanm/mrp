@@ -1,9 +1,10 @@
 function getStatistica(feature){
 	var res={};
+	res['name']=feature.get("NAME")
 	res['population'] = feature.get("population");
 	res['avsel'] = feature.get("avsel");
 	res['prom'] = statisticaProm(feature);
-	
+	res['invest'] = statisticaInvest(feature);
 	return res;
 }
 
@@ -52,7 +53,8 @@ function statisticaProm(feature){
 
 	return fetch('https://gs.gismart.ru/geoserver2/mainMap/ows', {
 		method: 'POST',
-		body: new XMLSerializer().serializeToString(featureRequest)
+		body: new XMLSerializer().serializeToString(featureRequest),
+		mode: 'cors'
 	}).then(function(response) {
 		return response.json();
 	}).then(function(json) {
@@ -76,5 +78,41 @@ function statisticaProm(feature){
 		for (var a in data){
 			res.push([a, data[a]]);
 		}
+		return res;
+	});
+}
+
+
+function statisticaInvest(feature){
+	var polygon = feature.getGeometry();
+	var featureRequest = new ol.format.WFS().writeGetFeature({
+		srsName: 'EPSG:3857',
+		featureNS: 'http://www.opengis.net',
+		featurePrefix: 'mainMap',
+		featureTypes: ['invest'],
+		outputFormat: 'application/json',
+		filter: ol.format.filter.intersects('way', polygon, 'EPSG:3857')
+	});
+
+	return fetch('https://gs.gismart.ru/geoserver2/mainMap/ows', {
+		method: 'POST',
+		body: new XMLSerializer().serializeToString(featureRequest),
+		mode: 'cors'
+	}).then(function(response) {
+		return response.json();
+	}).then(function(json) {
+		var res = [];
+		var features = new ol.format.GeoJSON().readFeatures(json);
+		rasp={};
+		for(var f in features){
+			if(typeof(rasp[features[f].get('srok')])==='undefined'){
+				rasp[features[f].get('srok')] = 0;
+			}
+			++rasp[features[f].get('srok')];
+        }
+        for(var f in rasp){
+        	res.push([f,rasp[f]]);
+        }
+		return res;
 	});
 }
