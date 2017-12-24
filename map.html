@@ -21,6 +21,7 @@
         <script src="js/init-layers.js"></script>
         <script src="js/controls.js"></script>
         <script src="js/statistica.js"></script>
+        <script src="js/filters.js"></script>
     </head>
     <body>
         <div id="sidebar" class="sidebar collapsed">
@@ -62,6 +63,19 @@
                             <i class="fa fa-caret-left"></i>
                         </span>
                     </h1>
+                    <div id="filter-content">
+                        <p><br>Регион:</p>
+                        <select id="filter-select-region"></select>
+                        <p><br>Отрасль:</p>
+                        <select id="filter-select-prof-area"></select>
+                        <p><br>Критичные аттрибуты:</p>
+                        <input type="checkbox" name="prof" value="prof"> Компетент. кадров<br>
+                        <input type="checkbox" name="peopleAmount" value="peopleAmount"> Доступность кадров<br>
+                        <input type="checkbox" name="rent" value="rent"> Стоимость аренды<br>
+                        <input type="checkbox" name="profGroups" value="profGroups"> Проф. сообщества<br>
+                        <br> Население больше (тыс): <br><input type="text" name="pop" value="100"><br><br>
+                        <input type="submit" value="Скачать">
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,6 +97,7 @@
                   duration: 250
                 }
             });
+            fillAnalyticsSidebar();
             closer.onclick = function() {
                 overlay.setPosition(undefined);
                 closer.blur();
