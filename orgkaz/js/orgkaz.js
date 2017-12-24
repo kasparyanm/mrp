@@ -131,7 +131,8 @@ function initORG(){
 	layerOrgkaz = new ol.layer.Vector({
 		'title': 'организации оказывающие влияние',
 		source: orgkazClusterSource,
-		style : styleFunction
+		style : styleFunction,
+		name: 'orgkaz'
 	})
 
 	layerOSM = new ol.layer.Tile({
@@ -171,4 +172,8 @@ function initORG(){
 	    }),	
 	    style: styleFunction
 	})
+}
+
+function getStatistica(feature){
+	
 }
