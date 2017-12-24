@@ -133,74 +133,107 @@
                         resStat['prom']= val;
                         resStat['akkrorg'].then(function(val){
                             resStat['akkrorg']= val;
-                            resStat['invest'].then(function(val){
-                                resStat['invest']= val;
-                                str = '<p>Регион: '+resStat["name"]+'</p>';
-                                str += '<p>Средняя з.п: '+resStat["avsel"]+'</p>';
-                                str += '<p>Население: '+resStat["population"]+'</p>';
-                                str += '<p>Аккредитованных организаций:<br>'+resStat['akkrorg']+'</p>';
-                                str = '<table class="fixed" width="500px"> <col width="200px"/><col width="200px" /> <tr> <td>'+str+'</td> <td><h5>Инвестиционные проекты</h5><div id="investanal"></div></td> </tr> <tr> <td><h5>Отрасли промышленности</h5><div id="promanalytics"></div></td> <td>Aa</td> </tr> </table>'
-                                var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
-                                content.innerHTML = str;
+                            resStat['orgokaz'].then(function(val){
+                                resStat['orgokaz']= val;
+                                resStat['invest'].then(function(val){
+                                    resStat['invest']= val;
+                                    str = '<p>Регион: '+resStat["name"]+'</p>';
+                                    str += '<p>Средняя з.п: '+resStat["avsel"]+' руб</p>';
+                                    str += '<p>Население: '+resStat["population"]+' чел</p>';
+                                    str += '<p>Аккредитованных организаций:<br>'+resStat['akkrorg']+'</p>';
+                                    str = '<table class="fixed" width="500px"> <col width="200px"/><col width="200px" /> <tr> <td>'+str+'</td> <td><h5>Инвестиционные проекты</h5><div id="investanal"></div></td> </tr> <tr> <td><h5>Отрасли промышленности</h5><div id="promanalytics"></div></td> <td><h5>Влиятельные организации</h5><div id="orgkazalytics"></div></td> </tr> </table>'
+                                    var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
+                                    content.innerHTML = str;
 
-                                overlay.setPosition(map.getCoordinateFromPixel([350,750]));
-                                var chart = c3.generate({
-                                    bindto: '#promanalytics',
-                                    legend:{
-                                        show:false
-                                    },
-                                    size:{
-                                        height: 250,
-                                        width: 250,
-                                    },
-                                    title: {
-                                        show: false,
-                                        text: 'My Line Chart',
-                                        position: 'top-center',   // top-left, top-center and top-right
-                                        padding: {
-                                          top: 20,
-                                          right: 20,
-                                          bottom: 40,
-                                          left: 50
+                                    overlay.setPosition(map.getCoordinateFromPixel([350,750]));
+                                    var chart = c3.generate({
+                                        bindto: '#promanalytics',
+                                        legend:{
+                                            show:false
+                                        },
+                                        size:{
+                                            height: 250,
+                                            width: 250,
+                                        },
+                                        title: {
+                                            show: false,
+                                            text: 'My Line Chart',
+                                            position: 'top-center',   // top-left, top-center and top-right
+                                            padding: {
+                                              top: 20,
+                                              right: 20,
+                                              bottom: 40,
+                                              left: 50
+                                            }
+                                          },
+                                        data: {
+                                          columns: resStat['prom'],
+                                          type: 'donut'
+                                        },
+                                        donut:{
+                                            title:""
                                         }
-                                      },
-                                    data: {
-                                      columns: resStat['prom'],
-                                      type: 'donut'
-                                    },
-                                    donut:{
-                                        title:"Отрасли промышленности"
-                                    }
-                                  });
-                                  var chart = c3.generate({
-                                    bindto: '#investanal',
-                                    legend:{
-                                        show:false
-                                    },
-                                    size:{
-                                        height: 250,
-                                        width: 250,
-                                    },
-                                    title: {
-                                        show: false,
-                                        text: 'My Line Chart',
-                                        position: 'top-center',   // top-left, top-center and top-right
-                                        padding: {
-                                          top: 20,
-                                          right: 20,
-                                          bottom: 40,
-                                          left: 50
+                                      });
+                                    var chart = c3.generate({
+                                        bindto: '#orgkazalytics',
+                                        legend:{
+                                            show:false
+                                        },
+                                        size:{
+                                            height: 250,
+                                            width: 250,
+                                        },
+                                        title: {
+                                            show: false,
+                                            text: 'My Line Chart',
+                                            position: 'top-center',   // top-left, top-center and top-right
+                                            padding: {
+                                              top: 20,
+                                              right: 20,
+                                              bottom: 40,
+                                              left: 50
+                                            }
+                                          },
+                                        data: {
+                                          columns: resStat['orgokaz'],
+                                          type: 'donut'
+                                        },
+                                        donut:{
+                                            title:""
                                         }
-                                      },
-                                    data: {
-                                      columns: resStat['invest'],
-                                      type: 'donut'
-                                    },
-                                    donut:{
-                                        title:"Инвестиционные проекты"
-                                    }
-                                  });
+                                      });
+
+                                      var chart = c3.generate({
+                                        bindto: '#investanal',
+                                        legend:{
+                                            show:false
+                                        },
+                                        size:{
+                                            height: 250,
+                                            width: 250,
+                                        },
+                                        title: {
+                                            show: false,
+                                            text: 'My Line Chart',
+                                            position: 'top-center',   // top-left, top-center and top-right
+                                            padding: {
+                                              top: 20,
+                                              right: 20,
+                                              bottom: 40,
+                                              left: 50
+                                            }
+                                          },
+                                        data: {
+                                          columns: resStat['invest'],
+                                          type: 'donut'
+                                        },
+                                        donut:{
+                                            title:""
+                                        }
+                                      });
+                                })
                             })
+                            
                         })
                        
                         

@@ -6,6 +6,7 @@ function getStatistica(feature){
 	res['prom'] = statisticaProm(feature);
 	res['invest'] = statisticaInvest(feature);
 	res['akkrorg']=statisticaAkkrOrg(feature);
+	res['orgokaz']=statisticaOrgOkaz(feature);
 	return res;
 }
 
@@ -151,5 +152,39 @@ function statisticaAkkrOrg(feature){
 		}
 		
 		return str;
+	});
+}
+
+function statisticaOrgOkaz(feature){
+	var polygon = feature.getGeometry();
+	var featureRequest = new ol.format.WFS().writeGetFeature({
+		srsName: 'EPSG:3857',
+		featureNS: 'http://www.opengis.net',
+		featurePrefix: 'mainMap',
+		featureTypes: ['orgokaz'],
+		outputFormat: 'application/json',
+		filter: ol.format.filter.intersects('way', polygon, 'EPSG:3857')
+	});
+
+	return fetch('https://gs.gismart.ru/geoserver2/mainMap/ows', {
+		method: 'POST',
+		body: new XMLSerializer().serializeToString(featureRequest),
+		mode: 'cors'
+	}).then(function(response) {
+		return response.json();
+	}).then(function(json) {
+		var res = [];
+		var features = new ol.format.GeoJSON().readFeatures(json);
+		rasp={};
+		for(var f in features){
+			if(typeof(rasp[features[f].get('gr')])==='undefined'){
+				rasp[features[f].get('gr')] = 0;
+			}
+			++rasp[features[f].get('gr')];
+        }
+        for(var f in rasp){
+        	res.push([f,rasp[f]]);
+        }
+		return res;
 	});
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Карта промышленности</title>
+        <title>Карта экспертов</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta charset="utf-8">
@@ -18,8 +18,18 @@
         <script src="../js/controls.js"></script>
         <script src="./js/initLayer.js"></script>
         <link rel="stylesheet" href="css/styles.css" />
+        <style>
+            #header {
+            font-size: 2.2em; /* Размер текста */
+            text-align: center; /* Выравнивание по центру */
+            padding: 5px; /* Отступы вокруг текста */
+            background: #8fa09b; /* Цвет фона шапки */
+            color: #ffe; /* Цвет текста */
+           }
+        </style>
     </head>
     <body>
+        <div id="header">Карта экспертов организаций, проводящих специальную оценку условий труда</div>
         <div id="map" class="sidebar-map"></div>
         <div id="popup" class="ol-popup">
             <a href="#" id="popup-closer" class="ol-popup-closer"></a>
