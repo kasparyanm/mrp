@@ -73,12 +73,13 @@
                 str = '';
                 ls=[];
                 if(features.length == 1){
-                    str+='<p>Наименование:<br><code>' + features[0].get('name') + '</code></p>';
-                    str+='<p>Адрес:<br><code>' + features[0].get('address') + '</code></p>';
-                    str+='<p>Отрасль:<br><code>' + features[0].get('gr') + '</code></p>';
+                    str+='<p>Эксперт:<br><code>' + features[0].get('org_name') + '</code></p>';
+                    str+='<p>Адрес:<br><code>' + features[0].get('org_adr') + '</code></p>';
+                    str+='<p>Дата аккредитации:<br><code>' + features[0].get('date_request') + '</code></p>';
+                    str+='<p>Регистрационный номер:<br><code>' + features[0].get('reg_num') + '</code></p>';
                 }else{
                     for(var f in features){
-                        str+='<code>' + features[f].get('name') + '</code><br>';
+                        str+='<code>' + features[f].get('org_name') + '</code><br>';
                     }
                 }
                 if(features.length > 0){                   
