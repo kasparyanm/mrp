@@ -10,9 +10,15 @@ function initLayers(){
 		    },
 		    strategy: ol.loadingstrategy.bbox
 		}),
-	    style: function(feature) {
-				return styles[feature.getGeometry().getType()];
-				}
+	    style: new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: 8,
+					fill: new ol.style.Fill({
+						color: 'rgba(255, 0, 0, 0.5)'
+					}),
+					stroke: new ol.style.Stroke({color: 'grey', width: 1})
+				})
+		})
 	});
 	var promSource= new ol.source.Vector({
 		    format: new ol.format.GeoJSON(),
