@@ -75,16 +75,54 @@
                 if(features.length == 1){
                     str+='<p>Наименование:<br><code>' + features[0].get('name') + '</code></p>';
                     str+='<p>Адрес:<br><code>' + features[0].get('address') + '</code></p>';
-                    str+='<p>Отрасль:<br><code>' + features[0].get('gr') + '</code></p>';
-                }else{
+                    str+='<p>Департамент:<br><code>' + features[0].get('depart') + '</code></p>';
+                }else if(features.length > 1 && features.length < 5){
                     for(var f in features){
                         str+='<code>' + features[f].get('name') + '</code><br>';
                     }
+                }else{
+                    rasp={};
+                    for(var f in features){
+                        if(typeof(rasp[features[f].get('depart')])==='undefined'){
+                            rasp[features[f].get('depart')] = 0;
+                        }
+                        ++rasp[features[f].get('depart')];
+                    }
+                    for(var f in rasp){
+                        ls.push([f,rasp[f]]);
+                    }
+                    str+='<div id="analytics"></div>';
                 }
                 if(features.length > 0){                   
                     var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
                     content.innerHTML = str;
                     overlay.setPosition(coordinate);
+                    if(features.length>=5){
+                    var chart = c3.generate({
+                        bindto: '#analytics',
+                        legend:{
+                            show:false
+                        },
+                        title: {
+                            show: false,
+                            text: 'My Line Chart',
+                            position: 'top-center',   // top-left, top-center and top-right
+                            padding: {
+                              top: 20,
+                              right: 20,
+                              bottom: 40,
+                              left: 50
+                            }
+                          },
+                        data: {
+                          columns: ls,
+                          type: 'donut'
+                        },
+                        donut:{
+                            title:"Распределение"
+                        }
+                      });
+                    }
                 }
             });
         </script>
